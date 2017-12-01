@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import argparse
+import time
 
 def kmeans_seg(img, K):
     size = img.shape
@@ -20,9 +21,9 @@ def kmeans_seg(img, K):
     Z = np.float32(Z)
 
     # define criteria, number of clusters(K) and apply kmeans()
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 1.0)
 
-    ret, label, center = cv2.kmeans(Z, K, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+    ret, label, center = cv2.kmeans(Z, K, None, criteria, 20, cv2.KMEANS_RANDOM_CENTERS)
 
     # Now convert back into uint8, and make original image
     center = np.uint8(center)
@@ -36,9 +37,12 @@ def kmeans_seg(img, K):
 
 
 def seg(args):
+    start = time.time()
     img = cv2.imread(args.input_path)
     img_seg = kmeans_seg(img, args.K)
     cv2.imwrite(args.output_path, img_seg)
+    end = time.time()
+    print("Spend time: " + str(end - start))
 
 def main():
     parser = argparse.ArgumentParser()
