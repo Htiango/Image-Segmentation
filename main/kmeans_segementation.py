@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import argparse
 import time
+from find_boundary import find_bound
 
 def kmeans_seg(img, K):
     size = img.shape
@@ -29,6 +30,8 @@ def kmeans_seg(img, K):
     center = np.uint8(center)
     res = center[label.flatten(), 0:3]
     res2 = res.reshape((img.shape))
+
+    mask = find_bound(label,size)
 
     # cv2.imshow('res2', res2)
     # cv2.waitKey(0)
