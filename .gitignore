@@ -6,6 +6,7 @@ __pycache__/
 # directory
 *.swp
 data/
+.idea/
 
 # C extensions
 *.so
