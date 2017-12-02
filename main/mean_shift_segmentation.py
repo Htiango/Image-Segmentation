@@ -2,16 +2,27 @@ import cv2
 import numpy as np
 import argparse
 import time
+import copy
 from find_boundary import find_bound
 from sklearn.cluster import MeanShift, estimate_bandwidth
-from sklearn.datasets.samples_generator import make_blobs
 import matplotlib.pyplot as plt
 
-def kmeans_seg(img, K):
+def shift_seg(img, K):
     size = img.shape
     height = size[0]
     width = size[1]
     channel = size[2]
+
+    plt.figure(2)
+    plt.subplot(3, 1, 1)
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+
+
+
+
+    #img = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
+    #img = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
 
     imgPos = np.zeros(shape=(height, width, channel + 2))
 
@@ -28,9 +39,9 @@ def kmeans_seg(img, K):
 
 
 
-    bandwidth = 30
-    #bandwidth = estimate_bandwidth(X, quantile=0.2, n_samples=500)
-
+    #bandwidth = 30
+    bandwidth = estimate_bandwidth(Z2, quantile=0.2, n_samples=1000)
+    print(bandwidth)
     ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
     ms.fit(Z1)
     label1 = ms.labels_
@@ -39,10 +50,7 @@ def kmeans_seg(img, K):
     ms.fit(Z2)
     label2 = ms.labels_
 
-    plt.figure(2)
-    plt.subplot(3, 1, 1)
-    plt.imshow(img)
-    plt.axis('off')
+
     plt.subplot(3, 1, 2)
     plt.imshow(np.reshape(label1, img.shape[0:2]))
     plt.axis('off')
@@ -70,7 +78,7 @@ def kmeans_seg(img, K):
 def seg(args):
     start = time.time()
     img = cv2.imread(args.input_path)
-    img_seg = kmeans_seg(img, args.K)
+    img_seg = shift_seg(img, args.K)
     #cv2.imwrite(args.output_path, img_seg)
     end = time.time()
     print("Spend time: " + str(end - start))
