@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import argparse
 import time
-from find_boundary import find_bound
+import find_boundary as bz
 
 def kmeans_seg(img, K):
     size = img.shape
@@ -31,19 +31,22 @@ def kmeans_seg(img, K):
     res = center[label.flatten(), 0:3]
     res2 = res.reshape((img.shape))
 
-    mask = find_bound(label,size)
+    mask = bz.find_bound(label, size)
+
+    # mask.dtype = "uint8"
 
     # cv2.imshow('res2', res2)
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
-    return res2
+    return res2, mask
 
 
 def seg(args):
     start = time.time()
     img = cv2.imread(args.input_path)
-    img_seg = kmeans_seg(img, args.K)
+    img_seg, img_binary = kmeans_seg(img, args.K)
     cv2.imwrite(args.output_path, img_seg)
+    cv2.imwrite(args.output_path2, img_binary)
     end = time.time()
     print("Spend time: " + str(end - start))
 
@@ -52,7 +55,9 @@ def main():
     parser.add_argument('-i', '--input_path', type=str,
         required=True, help='path of the input image file')
     parser.add_argument('-o', '--output_path', type=str,
-        required=True, help='path of the ouput image file')
+        required=True, help='path of the output image file')
+    parser.add_argument('-o2', '--output_path2', type=str,
+                        required=True, help='path of the binary output image file')
     parser.add_argument('-k', '--K', type=int,
         default=16, help='the cluster number of kmeans')
 
