@@ -29,8 +29,8 @@ def eval_bound(mask1, mask2 ,thres):
         print ( 'shape not match')
         return -1, -1
     if len(s1) == 3:
-        b1 = mask1.reshape( s1[0], s1[1]) > 0
-        b2 = mask2.reshape( s2[0], s2[1]) > 0
+        b1 = mask1.reshape( s1[0], s1[1]) == 0
+        b2 = mask2.reshape( s2[0], s2[1]) == 0
     else :
         b1 = mask1 == 0
         b2 = mask2 == 0
