@@ -7,6 +7,7 @@ import time
 from mean_shift_segmentation import shift_seg
 from process_ground_truth import get_groundTruth
 from eval_boundary import eval_bound
+from kmeans_segementation import kmeans_seg
 
 def main():
 
@@ -27,14 +28,28 @@ def main():
         img = cv2.imread(img_path)
 
         start_shift = time.time()
-        clustered_img, boundary_predict = shift_seg(img)
+        clustered_img, boundary_predict = kmeans_seg(img, 16)
+        # clustered_img, boundary_predict = shift_seg(img)
         end_shift = time.time()
         print("Shifting time: " + str(end_shift - start_shift))
 
-        boundary_truth = get_groundTruth(boundary_path)
-        end_iteration = time.time()
+        # cv2.imshow('res2', boundary_predict)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
-        pre, recall = eval_bound(boundary_predict, boundary_truth, 2)
+        cv2.imwrite('../output/test1-binary.png', boundary_predict)
+
+        boundary_truth = get_groundTruth(boundary_path)
+
+        cv2.imwrite('../output/test1-binary-truth.png', boundary_truth)
+
+        # cv2.imshow('res2', boundary_truth)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+
+
+        pre, recall = eval_bound(boundary_predict, boundary_truth, 4)
+        end_iteration = time.time()
         print("Precision is: " + str(pre))
         print("Recall is :" + str(recall))
 
