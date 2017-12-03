@@ -9,10 +9,12 @@ def helper(b1,b2,h,w,thres):
             if b1[i][j]:
                 lower_x = max(0,i-thres)
                 upper_x = min(h-1,i + thres)
-                lower_y = max(0,i-thres)
-                upper_y = min(h-1,i + thres)
-                if b2[lower_x : upper_x + 1] [ lower_y : upper_y+1].sum() > 0: 
-                    cnt =  cnt + 1
+                lower_y = max(0,j-thres)
+                upper_y = min(w-1,j + thres)
+                matrix_rows = b2[lower_x : upper_x + 1, :]
+                matrix = matrix_rows[:, lower_y : upper_y+1]
+                if matrix.sum() > 0:
+                    cnt = cnt + 1
     total = b1.sum()
     print (cnt)
     print (total)
