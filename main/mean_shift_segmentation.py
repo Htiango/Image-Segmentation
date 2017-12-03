@@ -18,6 +18,9 @@ def shift_seg(img, K):
     # plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     # plt.axis('off')
 
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+
     imgPos = np.zeros(shape=(height, width, channel + 2))
 
     for i in range(height):
@@ -38,6 +41,8 @@ def shift_seg(img, K):
     center_feature5 = np.uint8(ms_feature5.cluster_centers_)
     res_feature5 = center_feature5[label_feature5.flatten(), 0:3]
     res_feature5 = res_feature5.reshape(img.shape)
+    # res_feature5 = cv2.cvtColor(res_feature5, cv2.COLOR_YUV2BGR)
+    res_feature5 = cv2.cvtColor(res_feature5, cv2.COLOR_LAB2BGR)
 
     # ms_feature3 = MeanShift(bandwidth=bandwidth, bin_seeding=True)
     # ms_feature3.fit(Z_feature3)
