@@ -1,49 +1,34 @@
 import argparse
 import cv2
 import numpy as np
-
-
-def readImg():
-    # path = args.input_image
-    path = "../data/Polarlicht_2.jpg"
-    img = cv2.imread(path)
-    size = img.shape
-    height = size[0]
-    width = size[1]
-    channel = size[2]
-
-    imgPos = np.zeros(shape=(height,width,channel + 2))
-
-    for i in range(height):
-        for j in range(width):
-            imgPos[i][j] = np.append(img[i][j], [i, j])
-
-    Z = imgPos.reshape((-1, 5))
-
-    # convert to np.float32
-    Z = np.float32(Z)
-
-    # define criteria, number of clusters(K) and apply kmeans()
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
-    K = 16
-    ret, label, center = cv2.kmeans(Z, K, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
-
-    # Now convert back into uint8, and make original image
-    center = np.uint8(center)
-    res = center[label.flatten(), 0:3]
-    res2 = res.reshape((img.shape))
-
-    cv2.imshow('res2', res2)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+from os import listdir
+from os.path import isfile, join
+import time
+from mean_shift_segmentation import shift_seg
+from process_ground_truth import get_groundTruth
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input_image', type=str,
-        required=True, help='path of the input image file')
-    args = parser.parse_args()
 
-    # readimg(args)
+    start = time.time()
+    # get all the images files and boundary file
+    img_dir = "../data/images/train/"
+    boundary_dir = "../data/groundTruth/train/"
+    img_files = [f for f in listdir(img_dir) if isfile(join(img_dir, f)) and f.endswith(".jpg")]
+    boundary_files = [f for f in listdir(boundary_dir) if isfile(join(boundary_dir, f)) and f.endswith(".mat")]
+
+    num = len(boundary_files)
+
+    for i in range(num):
+        print("Handling:   " + boundary_files[i] + "   ====   " + img_files[i])
+        img_path = img_files[i]
+        boundary_path = boundary_files[i]
+        img = cv2.imread(img_path)
+        clustered_img, boundary_predict = shift_seg(img)
+        boundary_truth = get_groundTruth(boundary_path)
+        print("get!")
+        break
+
 
 if __name__ == "__main__":
-    readImg()
+
+    main()
