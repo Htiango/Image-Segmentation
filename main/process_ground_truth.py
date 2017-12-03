@@ -1,16 +1,26 @@
 import scipy.io
 import numpy as np
 
-mat = scipy.io.loadmat('../data/groundTruth/train/2092.mat')
 
-groundTruth = mat.get('groundTruth')
-label_num = groundTruth.size
+def get_groundTruth(path):
+    """
+    get the boundary from mat file
+    :param path:
+    :return:
+    """
+    mat = scipy.io.loadmat(path)
 
-for i in range(label_num):
-    boundary = groundTruth[0][i]['Boundaries'][0][0]
-    if i == 0:
-        trueBoundary = boundary
-    else:
-        trueBoundary += boundary
+    groundTruth = mat.get('groundTruth')
+    label_num = groundTruth.size
 
-print("success")
+    for i in range(label_num):
+        boundary = groundTruth[0][i]['Boundaries'][0][0]
+        if i == 0:
+            trueBoundary = boundary
+        else:
+            trueBoundary += boundary
+
+    height = trueBoundary.shape[0]
+    width = trueBoundary.shape[1]
+    trueBoundary = trueBoundary.reshape(height, width, 1)
+    return trueBoundary
