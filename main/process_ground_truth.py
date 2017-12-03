@@ -4,12 +4,11 @@ import numpy as np
 
 def get_groundTruth(path):
     """
-    get the boundary from mat file
+    return the nparray of boundary (0 for boundary and 255 for area)
     :param path:
     :return:
     """
     mat = scipy.io.loadmat(path)
-
     groundTruth = mat.get('groundTruth')
     label_num = groundTruth.size
 
@@ -23,4 +22,10 @@ def get_groundTruth(path):
     height = trueBoundary.shape[0]
     width = trueBoundary.shape[1]
     trueBoundary = trueBoundary.reshape(height, width, 1)
+
+    trueBoundary = 255 * np.ones([height, width, 1], dtype="uint8") - (trueBoundary > 0) * 255
+
     return trueBoundary
+
+
+# get_groundTruth('../data/groundTruth/train/2092.mat')
