@@ -48,4 +48,7 @@ Python packages:
 + scikit-learn (0.19.1)
 + opencv-python (3.3.0.10)
 
+## Presentation
+[Google Doc PPT](https://docs.google.com/presentation/d/1jIW5XhrvLZdoxCoAsCcuzgIXp-iUJWkE_cTZKcaxDoE/edit#slide=id.g2be253a3a7_9_512)
+
 
